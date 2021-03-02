@@ -20,14 +20,13 @@
             <td> {{ product.price }}</td>
             <td>
               <a href="#" class="btn btn-primary mx-2" @click="editModal(product)">edit</a>
-              <a href="#" class="btn btn-danger" @click="produtDelete(product)">delete</a>
+              <a href="#" class="btn btn-danger" @click="productDelete(product)">delete</a>
             </td>
           </tr>
           </tbody>
         </table>
       </div>
     </div>
-
     <CreateEditModal v-if="isModalVisible" @close="closeModal" :product="product" @getProduct="getProduct"/>
 
   </div>
@@ -46,10 +45,15 @@ export default {
       products: {},
       isModalVisible: false,
       product: {},
+      config: {
+        headers: {
+          Authorization: 'bearer ' + this.$store.state.token,
+          Accept: 'application/json'
+        }
+      },
 
     }
   },
-
   mounted() {
     if (this.$store.state.token !== '') {
       this.$http.post('http://127.0.0.1:8000/api/check-token', {token: this.$store.state.token})
@@ -73,17 +77,19 @@ export default {
 
     getProduct() {
 
-      this.$http.get('http://127.0.0.1:8000/api/products')
+      this.$http
+          .get('http://127.0.0.1:8000/api/products', this.config)
           .then(res => {
             this.products = res.data.data;
-          })
+          });
     },
-    produtDelete(product) {
-      this.$http.delete('http://127.0.0.1:8000/api/products/' + product.id)
+    productDelete(product) {
+      this.$http.delete('http://127.0.0.1:8000/api/products/' + product.id, this.config)
           .then(res => {
             this.getProduct();
           })
     },
+
     editModal(product) {
       this.product = product
       this.isModalVisible = true;

@@ -1,20 +1,18 @@
-import Vue from 'vue'
-import App from './App.vue'
-import VueRouter from 'vue-router'
-import Axios from 'axios'
-import Vuex from 'vuex'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'popper.js/dist/popper.min'
-import {auth} from './store/index'
-import {routes} from './routes/main'
+import Vue from 'vue';
+import App from './App.vue';
+import VueRouter from 'vue-router';
+import Axios from 'axios';
+import Vuex from 'vuex';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'popper.js/dist/popper.min';
+import {auth} from './store/index';
+import {routes} from './routes/main';
 
 // Components
 Vue.component('navbar-component', require('./components/partials/Navbar').default);
 Vue.component('loader', require('./components/partials/Loader').default);
-Vue.component('product-list', require('./components/products/Index').default);
 
 Vue.prototype.$http = Axios;
-
 
 Vue.use(VueRouter)
 const router = new VueRouter({

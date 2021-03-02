@@ -5,12 +5,13 @@
     <div class="container" v-else>
       <div class="row justify-content-center py-5">
         <div class="col-md-4">
+          <span>{{ error }}</span>
           <div v-if="errors.length">
             <ul>
               <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
             </ul>
           </div>
-          <form>
+          <form @submit.prevent="login">
             <div class="mb-3">
               <label>Email</label>
               <input type="email" v-model="formData.email" class="form-control">
@@ -20,7 +21,7 @@
               <input type="password" v-model="formData.password" class="form-control">
             </div>
             <div class="mb-3">
-              <button type="button" class="btn btn-info btn-lg" @click.prevent="login">Login</button>
+              <button type="submit" class="btn btn-info btn-lg">Login</button>
             </div>
           </form>
         </div>
@@ -30,15 +31,16 @@
 </template>
 <script>
 
-import {AuthMixin} from '../../mixins/AuthMixin';
+
 
 export default {
   name: 'Login',
-  mixins: [AuthMixin],
+
   data() {
     return {
-      loading: true,
+      loading: false,
       errors: [],
+      error: '',
       message: '',
       formData: {
         email: '',
@@ -58,14 +60,11 @@ export default {
       this.$http
           .post('http://127.0.0.1:8000/api/login', this.formData)
           .then(res => {
-            this.$store.commit('setToken', res.data.access_token);
+            this.$store.commit('setToken', res.data.token);
             this.$router.push('/dashboard');
-          }).catch(err => {
-        if (this.formData.email && this.formData.password && err) {
-          this.errors.push('Authentication Failed');
-        }
-        this.$store.commit('clearToken')
-      })
+          }).catch(res => {
+            this.error = res.response.data.error
+          })
     }
   }
 }

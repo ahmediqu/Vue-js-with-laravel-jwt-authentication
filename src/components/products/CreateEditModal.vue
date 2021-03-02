@@ -10,6 +10,7 @@
         </header>
         <section class="modal-body" id="modalDescription">
           <slot name="body">
+            {{ error }}
             <div v-if="errors.length">
               {{ errors }}
             </div>

@@ -7,7 +7,14 @@ export const ProductCreateEditMixin = {
                 description: '',
                 image: null,
             },
+            error: '',
             errors: '',
+            config: {
+                headers: {
+                    Authorization: 'bearer ' + this.$store.state.token,
+                    Accept: 'application/json'
+                }
+            },
         }
     },
     props: {
@@ -37,13 +44,13 @@ export const ProductCreateEditMixin = {
 
             if (this.$store.state.token) {
                 this.$http
-                    .post('http://127.0.0.1:8000/api/products/', data)
+                    .post('http://127.0.0.1:8000/api/products/', data, this.config)
                     .then(res => {
                         this.$emit('close');
                         this.$emit('getProduct');
                         this.formData = '';
-                    }).catch(err => {
-                    this.errors = err.message
+                    }).catch(res => {
+                    this.error = res.response.data.message
                 })
             } else {
                 return "something wrong";
@@ -60,11 +67,13 @@ export const ProductCreateEditMixin = {
             data.append('_method', 'PATCH');
             if (this.$store.state.token) {
                 this.$http
-                    .post('http://127.0.0.1:8000/api/products/' + product.id, data)
+                    .post('http://127.0.0.1:8000/api/products/' + product.id, data , this.config)
                     .then(res => {
                         this.$emit('close');
                         this.$emit('getProduct');
                         this.formData = '';
+                    }).catch(res => {
+                        this.error = res.response.data.message
                     });
             }
 
